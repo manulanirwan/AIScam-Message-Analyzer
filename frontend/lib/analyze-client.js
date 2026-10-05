@@ -1,6 +1,6 @@
 import { scoreMessage } from "./analyzer";
 
-const MODELS = ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-2.5-flash", "gemini-2.0-flash"];
+const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-3.5-flash", "gemini-3.8-flash"];
 
 function readJson(raw) {
   const text = String(raw || "");
@@ -41,13 +41,16 @@ async function explain(text, rules, apiKey) {
   for (const model of MODELS) {
     for (const jsonMode of [true, false]) {
       try {
-        return readJson(await callModel(model, apiKey, prompt, jsonMode));
+        const notes = readJson(await callModel(model, apiKey, prompt, jsonMode));
+        notes.model = model;
+        return notes;
       } catch (error) {
         lastError = error;
-        if (error.status && error.status !== 400 && error.status !== 404) break;
+        const busy = error.status === 429 || error.status === 500 || error.status === 503 || /high demand|unavailable|overloaded/i.test(error.message || "");
+        if (busy || error.status === 404) break;
+        if (error.status !== 400) return Promise.reject(error);
       }
     }
-    if (lastError?.status && lastError.status !== 400 && lastError.status !== 404) break;
   }
   throw lastError || new Error("Gemini request failed");
 }
@@ -65,6 +68,7 @@ export async function analyzeMessage(text, channel, apiKey) {
     const notes = await explain(raw, rules, key);
     const conflict = rules.band === "high" && String(notes.label || "").toLowerCase().includes("no strong");
     result.ai_used = true;
+    result.model = notes.model || "";
     result.conflict = conflict;
     if (!conflict && notes.label) result.label = String(notes.label).slice(0, 120);
     if (Array.isArray(notes.findings) && notes.findings.length) result.findings = notes.findings.map(String).slice(0, 6);

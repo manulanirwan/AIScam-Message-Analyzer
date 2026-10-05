@@ -81,7 +81,7 @@ export default function Page() {
                 <div>
                   <div className={`stamp ${result.band}`}>RISK: {result.band.toUpperCase()}</div>
                   <h2>{result.label}</h2>
-                  <span className="badge">{result.ai_used ? "Rules + Gemini" : "Rules only"} · {result.channel}</span>
+                  <span className="badge">{result.ai_used ? `Rules + Gemini${result.model ? ` (${result.model})` : ""}` : "Rules only"} · {result.channel}</span>
                 </div>
                 <strong className={result.band}>{result.risk_score}</strong>
               </div>
@@ -89,7 +89,7 @@ export default function Page() {
                 {result.findings.length === 0 ? <li>No strong finding.</li> : result.findings.map((item) => <li key={item}>{item}</li>)}
               </ul>
               <div className="callout"><strong>Recommended action: </strong>{result.action}</div>
-              {result.ai_error ? <p className="error">Gemini: {result.ai_error}. Rules result is still shown. If the key is website-restricted, allow https://manulanirwan.github.io/* in Google AI Studio.</p> : null}
+              {result.ai_error ? <p className="error">{/high demand|unavailable|overloaded/i.test(result.ai_error) ? "Gemini is busy on the first models. Rules result is still shown. Wait a minute and analyze again." : `Gemini: ${result.ai_error}. Rules result is still shown.`}</p> : null}
               <h3>Links</h3>
               <div className="list">
                 {result.urls.length === 0 ? <div className="url">No link found.</div> : result.urls.map((item) => (
