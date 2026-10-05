@@ -89,7 +89,7 @@ export default function Page() {
                 {result.findings.length === 0 ? <li>No strong finding.</li> : result.findings.map((item) => <li key={item}>{item}</li>)}
               </ul>
               <div className="callout"><strong>Recommended action: </strong>{result.action}</div>
-              {result.ai_error ? <p className="error">{result.ai_error}</p> : null}
+              {result.ai_error ? <p className="error">Gemini: {result.ai_error}. Rules result is still shown. If the key is website-restricted, allow https://manulanirwan.github.io/* in Google AI Studio.</p> : null}
               <h3>Links</h3>
               <div className="list">
                 {result.urls.length === 0 ? <div className="url">No link found.</div> : result.urls.map((item) => (
