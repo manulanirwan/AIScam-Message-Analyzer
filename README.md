@@ -1,6 +1,8 @@
 # AI Scam Message Analyzer
 
-Live site: https://manulanirwan.github.io/AIScam-Message-Analyzer/
+**Live site:** [https://manulanirwan.github.io/AIScam-Message-Analyzer/](https://manulanirwan.github.io/AIScam-Message-Analyzer/)
+
+[Open the analyzer](https://manulanirwan.github.io/AIScam-Message-Analyzer/)
 
 Paste a WhatsApp, SMS, or email message. Local rules score the scam risk. Gemini can explain the result. A high rule score cannot be forced to safe by text inside the message.
 
